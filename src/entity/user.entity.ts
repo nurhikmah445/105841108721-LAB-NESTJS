@@ -1,17 +1,19 @@
-import { Role } from "@prisma/client"
-import { Exclude, Expose } from "class-transformer"
+import { Role } from '@prisma/client';
+import { Exclude, Expose } from 'class-transformer';
 
-export class User{
+export class User {
+  @Expose()
+  id: number;
 
-    @Expose()
-    id : number
+  @Expose()
+  username: string;
 
-    @Expose()
-    username : string
-    
-    @Exclude()
-    password : string
-    
-    @Expose()
-    role : Role
+  @Exclude()
+  password: string;
+
+  @Expose()
+  role: Role;
+
+  @Expose()
+  foto_profile: string;
 }

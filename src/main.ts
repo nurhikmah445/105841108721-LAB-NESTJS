@@ -18,16 +18,9 @@ async function bootstrap() {
       transform : true
   }))
 
-
-//   app.enableCors({
-//     origin: 'http://localhost:3001', // URL frontend
-//     methods: 'GET,POST,PUT,DELETE',
-//     allowedHeaders: 'Content-Type,Authorization',
-//   });
-
   const config = new DocumentBuilder()
     .setTitle('Lab BackEnd Kelas - C')
-    .setDescription('Muh Tegar Al Fikri - 105841110722')
+    .setDescription('Muh. Tegar Al Fikri - 105841110722')
     .setVersion('0.1')
     .addTag('Kelas - C')
     .addBearerAuth()

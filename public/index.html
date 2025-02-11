@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room - Telegram Style</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="user-input">
+        <h2>Masukkan Username dan Room</h2>
+        <input type="text" id="username" placeholder="Masukkan username">
+        <input type="text" id="room" placeholder="Masukkan nama room">
+        <button onclick="joinRoom()">Gabung Room</button>
+    </div>
+
+    <div id="chat-container">
+        <div id="chat-header">Chat Room <span id="room-name"></span></div>
+        <div id="chat-box"></div>
+        <div id="chat-input">
+            <input type="text" id="message" placeholder="Tulis pesan...">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+        <button onclick="leaveRoom()" style="background: red; margin: 10px; border-radius: 10px;">Keluar Room</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

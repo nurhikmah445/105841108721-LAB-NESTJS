@@ -158,4 +158,23 @@ export class AppService {
 
     return this.prisma.mahasiswa.findMany();
   }
+
+  async pencarianMahasiswa(nim: string, nama: string, jurusan: string) {
+    const mahasiswa = await this.prisma.mahasiswa.findMany({
+      where: {
+        AND: [
+          { nim: { contains: nim } },
+          { nama: { contains: nama } },
+          { jurusan: { contains: jurusan } },
+        ],
+      },
+    });
+  
+    if (mahasiswa.length === 0) {
+      throw new Error('Tidak Menemukan Mahasiswa');
+    }
+  
+    return mahasiswa;
+  }
 }
+
