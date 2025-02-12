@@ -7,41 +7,57 @@ Proyek ini adalah implementasi backend menggunakan **NestJS** dengan beberapa mo
 Berikut adalah struktur proyek **Lab-NestJS** yang lebih rapi dan mudah dipahami:
 
 ```
-lab-nestjs/
-├── src/
-│   ├── app/
-│   │   ├── app.module.ts     # Modul utama aplikasi
-│   │   ├── app.controller.ts # Kontroler utama
-│   │   ├── app.service.ts    # Layanan utama
-│   ├── auth/
-│   │   ├── auth.module.ts    # Modul autentikasi
-│   │   ├── auth.controller.ts # Kontroler autentikasi
-│   │   ├── auth.service.ts   # Layanan autentikasi
-│   ├── chat/
-│   │   ├── chat.module.ts    # Modul chat
-│   │   ├── chat.controller.ts # Kontroler chat
-│   │   ├── chat.service.ts   # Layanan chat
-│   ├── mahasiswa-profile/
-│   │   ├── mahasiswa-profile.module.ts # Modul profil mahasiswa
-│   │   ├── mahasiswa-profile.controller.ts # Kontroler profil mahasiswa
-│   │   ├── mahasiswa-profile.service.ts # Layanan profil mahasiswa
-│   ├── profile/
-│   │   ├── profile.module.ts # Modul profil umum
-│   │   ├── profile.controller.ts # Kontroler profil
-│   │   ├── profile.service.ts # Layanan profil
-│   ├── prisma/
-│   │   ├── prisma.module.ts  # Modul Prisma untuk database
-│   │   ├── prisma.service.ts # Layanan Prisma
-│   ├── dto/
-│   │   ├── create-mahasiswa.dto.ts  # DTO untuk mahasiswa
-│   │   ├── register-user.dto.ts  # DTO untuk registrasi user
-│   ├── entity/
-│   │   ├── user.entity.ts  # Definisi entitas pengguna
-│   ├── main.ts  # Entry point aplikasi
-├── public/
-│   ├── app.js  # File publik
-├── package.json  # Konfigurasi proyek
-├── README.md  # Dokumentasi proyek
+📦lab-nestjs/
+├── 📂prisma/
+│   ├── prisma.schema
+├── 📂public/
+│   ├── 🟨app.js
+│   ├── 🟧index.html
+│   ├── 🟦styles.css
+├── 📂src/
+│   ├── 📂chat/
+│   |   |-- chat.gateaway.spec.ts
+│   |   |-- chat.gateaway.ts
+│   |   |-- chat.module.ts
+│   |   |-- chat.service.spec.ts
+│   |   |-- chat.service.ts
+│   ├── 📂dto/
+│   |   |-- create-mahasiswa.dto.ts
+│   |   |-- register-user.dto.ts
+│   ├── 📂entity/
+│   |   |-- user.entity.ts
+│   ├── 📂mahasiswa-profile/
+│   |   |-- mahasiswa-profile.controller.spec.ts
+│   |   |-- mahasiswa-profile.controller.ts
+│   |   |-- mahasiswa-profile.module.ts
+│   |   |-- mahasiswa-profile.service.spec.ts
+│   |   |-- mahasiswa-profile.service.ts
+│   ├── 📂profile/
+│   |   |-- profile.controller.spec.ts
+│   |   |-- profile.controller.ts
+│   |   |-- profile.module.ts
+│   |   |-- profile.service.spec.ts
+│   |   |-- profile.service.ts
+│   |-- app.controller.spec.ts
+│   |-- app.controller.ts
+│   |-- app.module.ts
+│   |-- app.service.ts
+│   |-- auth.guard.ts
+│   |-- auth.module.ts
+│   |-- 🟦main.ts
+│   |-- 🟦prisma.ts
+│   |-- 🟦user.decorator.ts
+├── 📂test/
+├── 📂uploads/
+├── .env
+├── .gitignore
+├── .prettierrc
+├── nest-cli.json
+├── package-lock.json 
+├── package.json 
+├── README.md 
+├── tsconfig.build.json 
+├── tsconfig.json 
 ```
 
 ## Diagram Arsitektur
@@ -69,6 +85,30 @@ flowchart
 ```
 
 Diagram ini menunjukkan bagaimana modul saling terhubung dan bagaimana aliran data terjadi di dalam aplikasi **Lab-NestJS**.
+
+## Alur Kerja Register User, Login dan Authenticated
+```mermaid
+graph TD
+  %% Registrasi Pengguna
+  A[Mulai: Register] -->|Pengguna mengisi data| B[Simpan data pengguna]
+  B -->|Sukses| C[Tampilkan pesan sukses]
+  B -.->|Gagal: Username sudah digunakan| I[Tampilkan error: Akun sudah ada]
+
+  %% Login dan Autentikasi
+  D[Mulai: Login] -->|Pengguna memasukkan kredensial| E[Periksa username]
+  E -->|Valid| F[Periksa password]
+  E -.->|Gagal: Username tidak ditemukan| L[Tampilkan error: Akun tidak terdaftar]
+  F -->|Valid| G[Generate token]
+  F -.->|Gagal: Password salah| M[Tampilkan error: Password salah]
+  G -->|Sukses| H[Return token]
+  H -->|Sukses| J[Pengguna menyimpan token & mengakses API]
+
+  %% Autentikasi Token
+  J -->|Mengakses API dengan token| K[Verifikasi token]
+  K -->|Valid| N[Akses API diberikan]
+  K -.->|Gagal: Token tidak valid| O[Tampilkan error: Token tidak sah]
+```
+
 
 ## Cara Menjalankan Proyek
 
@@ -99,3 +139,6 @@ Diagram ini menunjukkan bagaimana modul saling terhubung dan bagaimana aliran da
 - **Prisma** → ORM untuk database.
 - **WebSockets** → Untuk komunikasi real-time dalam chat.
 - **JWT (JSON Web Token)** → Untuk autentikasi pengguna.
+
+## Kesimpulan
+Proyek ini adalah implementasi backend menggunakan NestJS dengan beberapa modul utama, termasuk autentikasi, chat, profil mahasiswa, dan database dengan Prisma. Dengan menggunakan teknologi seperti WebSockets dan JWT, proyek ini dapat menyediakan komunikasi real-time dan autentikasi pengguna yang aman.
