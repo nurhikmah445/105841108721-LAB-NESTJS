@@ -1,9 +1,9 @@
-# LAPORAN LAB BACKEND
+# LAPORAN LAB BACKEND NEST.JS
 
-## PENDAHULUAN
+## 1.PENDAHULUAN
 Proyek Lab Backend ini merupakan implementasi sistem backend menggunakan framework **NestJS**, yang dirancang untuk memenuhi kebutuhan aplikasi modern dengan fitur-fitur seperti autentikasi, chat, profil mahasiswa, dan database dengan Prisma. Dalam proyek ini, kami akan membahas tentang bagaimana membangun aplikasi backend yang skalabel, aman, dan mudah dipelihara, serta bagaimana mengintegrasikan teknologi-teknologi seperti WebSockets dan JWT untuk menyediakan komunikasi real-time dan autentikasi pengguna yang aman. Dengan menggunakan contoh-contoh kode yang disediakan, Anda dapat mempelajari bagaimana menerapkan konsep-konsep ini dalam proyek Anda sendiri.
 
-## STRUKTUR PROYEK
+## 2. STRUKTUR PROYEK
 
 Berikut ini adalah struktur proyek **Lab-NestJS**:
 ```
@@ -62,20 +62,22 @@ Berikut ini adalah struktur proyek **Lab-NestJS**:
 ```
 
 ---
-
-## PENJELASAN SETIAP STRUKTUR FOLDER
-
-| Folder | Deskripsi |
-|--------|-----------|
-| `node_modules/` | Folder otomatis yang menyimpan semua dependensi proyek setelah `npm install`. |
-| `prisma/` | Mengelola skema database dengan Prisma ORM (Object Relational Mapping) yang memungkinkan untuk berinteraksi dengan database. Berisi `prisma.schema` untuk mendefinisikan tabel database. |
-| `public/` | Menyimpan file statis seperti HTML, CSS, dan JS untuk kebutuhan.Menghubungkan aplikasi web dengan server menggunakan WebSocket. Mengirimkan dan menerima data **chatting** dari server |
-| `src/` | Folder utama yang berisi kode backend NestJS. |
-| `uploads/` |  Tempat penyimpanan file yang di-upload oleh pengguna. File-file yang disimpan di dalam folder ini dapat digunakan untuk menyimpan file-file yang di-upload oleh pengguna, seperti foto profil, atau file lainnya. |
-| `test/` | Folder untuk unit test dan integration test. |
-
+## 3. TEKNOLOGI YANG DIGUNAKAN
+|Nama|Deskripsi|
+|---|---|
+|`NestJS`|Framework backend berbasis TypeScript|
+|`TypeScript`|Sebagai bahasa pemrograman yang digunakan untuk membuat kode proyek.
+|`Prisma`|ORM untuk database.
+|`PostgreSQL`|Sebagai database yang digunakan dalam proyek.
+|`Swagger`|Sebagai library untuk mengimplementasikan dokumentasi API menggunakan Swagger.
+|`WebSockets`|Untuk komunikasi real-time dalam chat.
+|`Socket.io`|Sebagai library untuk mengimplementasikan WebSocket.
+|`JWT (JSON Web Token)`|Untuk autentikasi pengguna.
 ---
-## PENJELASAN SETIAP FILE PADA FOLDER
+## 4. INSTALASI PROYEK NEST.JS
+
+
+## 5. PENJELASAN SETIAP FILE PADA FOLDER
 |Folder src/chat | Deskripsi|
 |--------|-----------|
 | `chat.gateway.spec.ts` | *****
@@ -121,8 +123,16 @@ Berikut ini adalah struktur proyek **Lab-NestJS**:
 |`main.ts`| *****
 |`prisma.ts`| *****
 |`user.decorator.ts`| *****
+
+|Folder lab-nestj/ | Deskripsi
+|-|-|
+|`.env`| *****
+|`.gitignore`| *****
+|`package-lock.json`| *****
+|`package.json`| *****
+|`README.md`| *****
 ---
-## DIAGRAM ARSITEKTUR
+## 6. DIAGRAM ARSITEKTUR
 
 Berikut diagram arsitektur proyek dalam bentuk flowchart visual:
 ```mermaid
@@ -147,7 +157,7 @@ flowchart
 
 Diagram ini menunjukkan bagaimana modul saling terhubung dan bagaimana aliran data terjadi di dalam aplikasi **Lab-NestJS**.
 
-## Alur Kerja Register User, Login dan Authenticated
+## 7. ALUR KERJA REGISTER USER, LOGIN DAN AUTHENTICATION
 ```mermaid
 graph TD
   %% Registrasi Pengguna
@@ -171,7 +181,7 @@ graph TD
 ```
 
 
-## Cara Menjalankan Proyek
+## 8. CARA MENJALANKAN PROYEK
 
 1. **Clone repository:**
    ```sh
@@ -186,7 +196,7 @@ graph TD
 
 3. **Menjalankan server:**
    ```sh
-   npm run start
+   npm start
    npm run start:dev
    ```
 
@@ -196,11 +206,6 @@ graph TD
    http://localhost:3000/api-docs  --> Swagger
    ```
 
-## Teknologi yang Digunakan
-- **NestJS** → Framework backend berbasis TypeScript.
-- **Prisma** → ORM untuk database.
-- **WebSockets** → Untuk komunikasi real-time dalam chat.
-- **JWT (JSON Web Token)** → Untuk autentikasi pengguna.
 
-## Kesimpulan
+## 9. KESIMPULAN
 Proyek ini adalah implementasi backend menggunakan NestJS dengan beberapa modul utama, termasuk autentikasi, chat, profil mahasiswa, dan database dengan Prisma. Dengan menggunakan teknologi seperti WebSockets dan JWT, proyek ini dapat menyediakan komunikasi real-time dan autentikasi pengguna yang aman.
