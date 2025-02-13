@@ -383,12 +383,323 @@ File ini berisi **Controller** untuk menangani API terkait pengelolaan foto prof
      - Fungsi ini memanggil `profileService.sendMyFotoProfile()` untuk mengambil nama file foto profil berdasarkan **ID** pengguna, dan mengembalikannya ke klien.
    - Menggunakan `@Res()` untuk mengirim file gambar ke pengguna menggunakan **express**.
 ---
+### 12. `profile/profile.service.ts`
+File ini berisi **Service** yang menangani logika bisnis terkait pengelolaan foto profil pengguna, termasuk meng-upload dan menghapus foto profil yang ada.
 
+#### a. **Metode `uploadFile()`**
+Fungsi ini bertanggung jawab untuk meng-upload foto profil pengguna ke server dan memperbarui informasi foto profil di database.
+
+1. **Langkah-langkah:**
+   - Mencari pengguna berdasarkan **ID** yang diberikan menggunakan **Prisma ORM**.
+   - Jika pengguna tidak ditemukan, melemparkan **NotFoundException** dengan pesan "Tidak Menemukan User".
+   - Jika pengguna sudah memiliki foto profil, file foto lama dihapus dari server.
+   - Memastikan direktori `uploads` ada, jika belum maka membuatnya.
+   - Menyusun nama file unik dengan menggunakan **username** pengguna, timestamp, dan ekstensi file.
+   - Menulis file yang diterima ke dalam direktori `uploads`.
+   - Memperbarui field `foto_profile` pada data pengguna di database dengan nama file yang baru.
+
+2. **Validasi:**
+   - Jika pengguna dengan **ID** yang diberikan tidak ditemukan, melemparkan **NotFoundException** dengan pesan "Tidak Menemukan User".
+
+3. **Output:**
+   - Mengembalikan objek yang berisi nama file dan path file yang disimpan di server.
+
+#### b. **Metode `sendMyFotoProfile()`**
+Fungsi ini bertanggung jawab untuk mengembalikan nama file foto profil pengguna berdasarkan **ID** yang diberikan.
+
+1. **Langkah-langkah:**
+   - Mencari data pengguna berdasarkan **ID** yang diberikan.
+   - Jika pengguna tidak ditemukan, melemparkan **NotFoundException** dengan pesan "Tidak Menemukan User".
+   - Mengembalikan nama file foto profil pengguna.
+
+2. **Validasi:**
+   - Jika pengguna dengan **ID** yang diberikan tidak ditemukan, melemparkan **NotFoundException** dengan pesan "Tidak Menemukan User".
+---
+### 13. `src/app.controller.ts`
+File ini berisi **Controller** yang menangani berbagai rute API untuk aplikasi mahasiswa, termasuk pendaftaran, login, pengelolaan data mahasiswa, dan pencarian mahasiswa. Controller ini menyediakan autentikasi dan mengelola CRUD (Create, Read, Update, Delete) data mahasiswa.
+
+#### a. **Rute API:**
+
+1. **`POST /register`**
+   - Fungsi: Mendaftarkan pengguna baru.
+   - Deskripsi: Endpoint ini menerima data pengguna baru, seperti username dan password, untuk mendaftarkan akun pengguna baru.
+   - **Dekorator:**
+     - `@ApiBody()`: Mendokumentasikan tipe data `RegisterUserDTO`.
+   - Mengarahkan permintaan ke `appService.register()` untuk memproses pendaftaran pengguna.
+
+2. **`POST /login`**
+   - Fungsi: Login pengguna dan mengembalikan token autentikasi.
+   - Deskripsi: Endpoint ini menerima data pengguna dan mengembalikan token autentikasi yang digunakan untuk mengakses rute yang dilindungi.
+   - **Dekorator:**
+     - `@ApiBody()`: Mendokumentasikan tipe data `RegisterUserDTO`.
+     - Menggunakan `res.cookie()` untuk mengatur cookie dengan token.
+   - Mengarahkan permintaan ke `appService.login()` untuk memproses login.
+
+3. **`GET /`**
+   - Fungsi: Mengembalikan pesan hello dari aplikasi.
+   - Deskripsi: Endpoint ini hanya untuk pengujian dan demonstrasi.
+
+4. **`GET /mahasiswa`**
+   - Fungsi: Mengambil data mahasiswa.
+   - Deskripsi: Endpoint ini mengembalikan daftar semua mahasiswa.
+   - Mengarahkan permintaan ke `appService.getMahasiswa()`.
+
+5. **`GET /mahasiswa/:nim`**
+   - Fungsi: Mengambil data mahasiswa berdasarkan **NIM**.
+   - Deskripsi: Endpoint ini mengembalikan data mahasiswa berdasarkan **NIM** yang diberikan.
+   - Mengarahkan permintaan ke `appService.getMahasiswByNim()`.
+
+6. **`GET /auth`**
+   - Fungsi: Mengembalikan informasi pengguna yang sedang login.
+   - Deskripsi: Endpoint ini hanya dapat diakses jika pengguna telah terautentikasi menggunakan **AuthGuard**.
+   - **Dekorator:**
+     - `@ApiBearerAuth()`: Menyediakan dokumentasi untuk autentikasi menggunakan token.
+   - Menggunakan `@UserDecorator()` untuk mendapatkan informasi pengguna yang sedang login.
+
+7. **`POST /mahasiswa`**
+   - Fungsi: Menambahkan data mahasiswa baru.
+   - Deskripsi: Endpoint ini menerima data mahasiswa baru dan menambahkannya ke database.
+   - **Dekorator:**
+     - `@ApiBody()`: Mendokumentasikan tipe data `CreateMahasiswaDTO`.
+   - Mengarahkan permintaan ke `appService.addMahasiswa()`.
+
+8. **`PUT /mahasiswa/:nim`**
+   - Fungsi: Memperbarui data mahasiswa berdasarkan **NIM**.
+   - Deskripsi: Endpoint ini memperbarui data mahasiswa yang ada berdasarkan **NIM** yang diberikan.
+   - **Dekorator:**
+     - `@ApiBody()`: Mendokumentasikan tipe data `CreateMahasiswaDTO`.
+   - Mengarahkan permintaan ke `appService.updateMahasiswa()`.
+
+9. **`DELETE /mahasiswa/:nim`**
+   - Fungsi: Menghapus data mahasiswa berdasarkan **NIM**.
+   - Deskripsi: Endpoint ini menghapus data mahasiswa yang ada berdasarkan **NIM** yang diberikan.
+   - Mengarahkan permintaan ke `appService.menghapusMahasiswa()`.
+
+10. **`GET /pencarian/mahasiswa`**
+    - Fungsi: Mencari mahasiswa berdasarkan **NIM**, **nama**, atau **jurusan**.
+    - Deskripsi: Endpoint ini menerima parameter pencarian seperti **NIM**, **nama**, dan **jurusan**, kemudian mencari mahasiswa yang sesuai.
+    - **Dekorator:**
+      - `@ApiQuery()`: Mendokumentasikan parameter query `nim`, `nama`, dan `jurusan` untuk pencarian.
+    - Mengarahkan permintaan ke `appService.pencarianMahasiswa()`.
+---
+### 14. `src/app.module.ts`
+File ini mendefinisikan **AppModule**, yang merupakan modul utama dalam aplikasi. Modul ini mengonfigurasi berbagai dependensi dan menghubungkan berbagai bagian aplikasi, seperti controller, service, dan modul lainnya.
+
+#### a. **Dekorator `@Module()`**
+Dekorator ini digunakan untuk mendeklarasikan modul dan menyediakan konfigurasi untuk aplikasi. Beberapa bagian penting dalam dekorator ini adalah:
+
+1. **`imports`**:
+   - `JwtModule.register()`: Mengonfigurasi **JWT (JSON Web Token)** dengan `secret` untuk otentikasi pengguna. Ini digunakan untuk menangani otentikasi berbasis token di aplikasi.
+   - `ProfileModule`: Modul ini bertanggung jawab untuk menangani foto profil pengguna, termasuk upload dan pengambilan foto profil.
+   - `ChatModule`: Modul ini menangani fitur chat real-time menggunakan WebSocket.
+   - `MahasiswaProfileModule`: Modul ini bertanggung jawab untuk mengelola data profil mahasiswa, termasuk upload dan pengambilan foto profil mahasiswa.
+
+2. **`controllers`**:
+   - `AppController`: Controller utama untuk aplikasi ini, yang menangani berbagai rute API terkait dengan pendaftaran, login, pengelolaan data mahasiswa, dan autentikasi.
+
+3. **`providers`**:
+   - `AppService`: Layanan yang menyediakan logika bisnis aplikasi terkait pengguna, mahasiswa, dan autentikasi.
+   - `PrismaService`: Layanan untuk menghubungkan aplikasi dengan database menggunakan **Prisma ORM**.
+---
+### 15. `src/app.service.ts`
+File ini berisi **Service** yang menangani logika bisnis utama untuk aplikasi, termasuk registrasi pengguna, autentikasi, pengelolaan mahasiswa, dan pencarian mahasiswa. Service ini berinteraksi dengan database menggunakan **Prisma ORM** dan menyediakan berbagai operasi CRUD (Create, Read, Update, Delete) terkait data mahasiswa.
+
+#### a. **Metode `register()`**
+Fungsi ini bertanggung jawab untuk mendaftarkan pengguna baru.
+
+1. **Langkah-langkah:**
+   - Memeriksa apakah username sudah terdaftar di database.
+   - Jika username sudah ada, melemparkan **BadRequestException**.
+   - Mengenkripsi password menggunakan **bcrypt**.
+   - Membuat pengguna baru di database dengan data yang diberikan.
+
+2. **Validasi:**
+   - Jika username sudah digunakan, melemparkan **BadRequestException** dengan pesan "Username ini Sudah Digunakan".
+   - Jika terjadi masalah pada server, melemparkan **InternalServerErrorException**.
+
+#### b. **Metode `login()`**
+Fungsi ini bertanggung jawab untuk login pengguna dan mengembalikan token autentikasi.
+
+1. **Langkah-langkah:**
+   - Mencari pengguna berdasarkan username.
+   - Jika pengguna tidak ditemukan, melemparkan **NotFoundException**.
+   - Memvalidasi password yang diberikan menggunakan **bcrypt**.
+   - Menghasilkan token JWT yang berisi payload yang mencakup `id`, `username`, dan `role`.
+
+2. **Validasi:**
+   - Jika password tidak cocok, melemparkan **BadRequestException** dengan pesan "Password Salah".
+   - Jika terjadi masalah pada server, melemparkan **InternalServerErrorException**.
+
+#### c. **Metode `auth()`**
+Fungsi ini mengembalikan informasi pengguna yang sedang login berdasarkan **user_id**.
+
+1. **Langkah-langkah:**
+   - Mencari pengguna berdasarkan **user_id**.
+   - Jika pengguna tidak ditemukan, melemparkan **NotFoundException**.
+
+#### d. **Metode `getMahasiswa()`**
+Fungsi ini mengembalikan daftar mahasiswa dari database.
+
+#### e. **Metode `addMahasiswa()`**
+Fungsi ini bertanggung jawab untuk menambahkan data mahasiswa baru.
+
+1. **Langkah-langkah:**
+   - Memeriksa apakah mahasiswa dengan **NIM** yang diberikan sudah ada.
+   - Jika sudah ada, melemparkan **NotFoundException**.
+   - Menambahkan data mahasiswa baru ke database.
+
+#### f. **Metode `getMahasiswByNim()`**
+Fungsi ini mengembalikan data mahasiswa berdasarkan **NIM**.
+
+1. **Langkah-langkah:**
+   - Mencari mahasiswa berdasarkan **NIM**.
+   - Jika mahasiswa tidak ditemukan, melemparkan **NotFoundException**.
+
+#### g. **Metode `menghapusMahasiswa()`**
+Fungsi ini menghapus data mahasiswa berdasarkan **NIM**.
+
+1. **Langkah-langkah:**
+   - Mencari mahasiswa berdasarkan **NIM**.
+   - Jika mahasiswa tidak ditemukan, melemparkan **NotFoundException**.
+   - Menghapus data mahasiswa dari database.
+
+#### h. **Metode `updateMahasiswa()`**
+Fungsi ini memperbarui data mahasiswa berdasarkan **NIM**.
+
+1. **Langkah-langkah:**
+   - Mencari mahasiswa berdasarkan **NIM**.
+   - Jika mahasiswa tidak ditemukan, melemparkan **NotFoundException**.
+   - Memperbarui data mahasiswa yang ditemukan.
+
+#### i. **Metode `pencarianMahasiswa()`**
+Fungsi ini mencari mahasiswa berdasarkan **NIM**, **nama**, dan **jurusan**.
+
+1. **Langkah-langkah:**
+   - Mencari mahasiswa dengan parameter pencarian yang diberikan.
+   - Jika tidak ditemukan, melemparkan **Error** dengan pesan "Tidak Menemukan Mahasiswa".
+---
+### 16. `src/auth.guard.ts`
+File ini berisi **AuthGuard**, yang merupakan pengawal (guard) untuk mengamankan rute API dengan memverifikasi autentikasi berbasis token menggunakan **JWT** (JSON Web Token). Pengawal ini memastikan bahwa hanya pengguna yang terotentikasi yang dapat mengakses rute tertentu.
+
+#### a. **Dekorator `@Injectable()`**
+Dekorator ini digunakan untuk menandakan bahwa **AuthGuard** adalah sebuah layanan yang dapat disuntikkan ke dalam komponen lainnya di aplikasi.
+
+#### b. **Metode `canActivate()`**
+Metode ini bertanggung jawab untuk memeriksa apakah pengguna memiliki izin untuk mengakses rute yang dilindungi. Berikut langkah-langkah yang dilakukan dalam metode ini:
+
+1. **Mengambil Header Authorization**:
+   - Mengambil header **Authorization** dari permintaan HTTP untuk memeriksa token autentikasi yang dikirimkan oleh pengguna.
+
+2. **Memeriksa Keberadaan Authorization Header**:
+   - Jika header **Authorization** tidak ditemukan, maka **UnauthorizedException** dilemparkan dengan pesan "Authorization header is missing".
+
+3. **Memvalidasi Token JWT**:
+   - Token yang terdapat dalam header **Authorization** diambil (dalam format "Bearer <token>").
+   - Token diverifikasi menggunakan **JwtService** untuk memastikan token tersebut valid.
+   - Jika token tidak valid atau terjadi kesalahan lainnya, maka **UnauthorizedException** dilemparkan dengan pesan "Invalid token".
+
+4. **Mencari Pengguna Berdasarkan Payload**:
+   - Setelah token diverifikasi, **payload** yang berisi **user id** diambil dan digunakan untuk mencari informasi pengguna menggunakan metode `auth()` dari **AppService**.
+   - Pengguna yang ditemukan kemudian disalin ke dalam objek **request.user** menggunakan **plainToInstance()**, agar bisa diakses di dalam handler rute.
+
+5. **Keputusan Akses**:
+   - Jika semua langkah di atas berhasil dilakukan tanpa masalah, maka rute diizinkan untuk diakses dengan mengembalikan **true**.
+---
+### 17. `src/auth.module.ts`
+File ini berisi **AuthModule**, yang bertanggung jawab untuk menyediakan layanan autentikasi di aplikasi menggunakan **NestJS**. Modul ini bersifat **Global**, yang berarti layanan yang disediakan oleh modul ini dapat diakses di seluruh aplikasi tanpa perlu diimpor lagi di modul lain.
+
+#### a. **Dekorator `@Global()`**
+Dekorator ini menandakan bahwa **AuthModule** adalah modul global. Layanan yang diekspor dari modul ini, seperti `AppService` dan `PrismaService`, dapat diakses di modul lain tanpa perlu menyertakan modul ini dalam impor mereka.
+
+#### b. **Dekorator `@Module()`**
+Dekorator ini mendeklarasikan dan mengonfigurasi modul **AuthModule**. Berikut adalah komponen-komponen penting dalam dekorator ini:
+
+1. **`providers`**:
+   - `AppService`: Layanan yang mengelola logika bisnis terkait pengguna, mahasiswa, dan autentikasi.
+   - `PrismaService`: Layanan yang bertanggung jawab untuk menghubungkan aplikasi dengan database menggunakan **Prisma ORM**.
+
+2. **`exports`**:
+   - **AuthModule** mengekspor **`AppService`** dan **`PrismaService`** agar layanan-layanan ini bisa digunakan di modul-modul lain dalam aplikasi.
+---
+### 18. `src/main.ts`
+File ini merupakan titik masuk utama untuk aplikasi NestJS. Di dalamnya, aplikasi dikonfigurasi, dijalankan, dan pengaturan tambahan seperti Swagger dan global pipes ditambahkan.
+
+#### a. **Deklarasi dan Pembuatan Aplikasi NestJS**
+1. **`NestFactory.create(AppModule)`**:
+   - Membuat instance aplikasi menggunakan **AppModule** yang telah didefinisikan sebelumnya.
+   - **AppModule** berisi konfigurasi utama aplikasi, seperti routing, middleware, dan provider.
+
+2. **`app.use(cookieParser())`**:
+   - Menambahkan middleware **cookie-parser** untuk mem-parsing cookies yang diterima dari klien.
+   - Membantu dalam membaca dan memproses cookie yang dikirim dalam permintaan HTTP.
+
+3. **`app.enableCors()`**:
+   - Mengonfigurasi Cross-Origin Resource Sharing (**CORS**) untuk aplikasi, yang memungkinkan aplikasi menerima permintaan dari sumber lain (dalam hal ini, `*` untuk menerima permintaan dari semua asal).
+
+4. **`app.useGlobalPipes(new ValidationPipe({ transform: true }))`**:
+   - Menambahkan global validation pipe untuk memvalidasi dan mengubah data input secara otomatis.
+   - **`ValidationPipe`** memeriksa kesalahan pada body request dan memastikan bahwa data sesuai dengan aturan yang ditentukan.
+   - Opsi `transform: true` memungkinkan otomatis mengubah data menjadi tipe yang sesuai berdasarkan DTO.
+
+#### b. **Swagger Setup**
+1. **`DocumentBuilder`**:
+   - Membuat konfigurasi untuk **Swagger** dokumentasi API. Mengatur:
+     - **Title**: Judul dokumentasi API.
+     - **Description**: Deskripsi API.
+     - **Version**: Versi API.
+     - **Tag**: Menambahkan tag untuk kategori API (dalam hal ini, "Kelas - C").
+     - **BearerAuth**: Menambahkan autentikasi Bearer Token untuk API.
+
+2. **`SwaggerModule.createDocument()`**:
+   - Membuat dokumentasi API berdasarkan konfigurasi yang telah dibuat.
+   - `app` digunakan untuk menghasilkan dokumentasi sesuai dengan pengaturan yang diberikan.
+
+3. **`SwaggerModule.setup()`**:
+   - Menyediakan rute **`/api-docs`** yang digunakan untuk mengakses dokumentasi API secara interaktif melalui Swagger UI.
+
+#### c. **Menjalankan Aplikasi**
+1. **`await app.listen(process.env.PORT ?? 3000)`**:
+   - Menjalankan aplikasi pada port yang ditentukan oleh variabel lingkungan `PORT`, atau default ke `3000` jika tidak ada port yang ditentukan.
+---
+### 19. `src/user.decorator.ts`
+File ini berisi **custom decorator** yang dibuat untuk mengambil informasi pengguna yang terautentikasi dari objek permintaan (**request**). Decorator ini memudahkan akses ke data pengguna dalam handler rute yang dilindungi oleh **AuthGuard**.
+
+#### a. **Dekorator `@UserDecorator()`**
+Dekorator ini digunakan untuk mengambil data pengguna yang telah diautentikasi dan disimpan dalam objek permintaan (`request.user`) oleh **AuthGuard**.
+
+1. **Fungsi `createParamDecorator()`**:
+   - `createParamDecorator` adalah fungsi dari NestJS yang digunakan untuk membuat decorator kustom yang bisa digunakan untuk parameter metode di controller.
+   - Decorator ini menerima dua parameter:
+     - **`data`**: Data opsional yang dapat diteruskan ke decorator (tidak digunakan dalam contoh ini).
+     - **`ctx` (ExecutionContext)**: Konteks eksekusi untuk permintaan HTTP saat ini.
+   
+2. **Logika di dalam decorator**:
+   - Dalam body decorator, kita mengambil objek permintaan (`request`) dari **ExecutionContext** dan mengakses properti `user` dari objek permintaan, yang berisi informasi pengguna yang terautentikasi.
+   - `request.user` biasanya di-set oleh **AuthGuard** setelah token validasi dan pengguna ditemukan.
+---
+### 20. `.env`
+File ini berisi **environment variables** yang digunakan untuk konfigurasi aplikasi, khususnya untuk pengaturan koneksi ke database yang digunakan oleh aplikasi. Variabel dalam file ini akan secara otomatis diakses oleh Prisma untuk menghubungkan aplikasi ke database.
 
 ---
+### 21. `.gitignore`
+File ini digunakan untuk menentukan file dan direktori mana yang harus diabaikan oleh **Git**. File ini penting untuk memastikan bahwa file atau folder yang tidak perlu atau bersifat pribadi (seperti file konfigurasi lokal, node_modules, dll.) tidak masuk ke dalam repositori Git.
 
 ---
+### 22. `package-lock.json`
+File ini otomatis dihasilkan oleh **npm** untuk mengunci versi dependensi yang digunakan dalam proyek. **`package-lock.json`** memastikan bahwa setiap orang yang meng-clone proyek ini akan menggunakan versi yang sama dari setiap paket yang digunakan, untuk menghindari masalah ketergantungan.
 
+---
+### 23. `package.json`
+File ini berisi metadata tentang proyek, termasuk:
+- **Dependensi** yang digunakan dalam proyek (seperti NestJS, Prisma, dll).
+- **Script** untuk menjalankan berbagai tugas, seperti `npm run start` untuk menjalankan aplikasi.
+- **Versi** proyek dan informasi pengembang.
+
+---
+### 24. `README.md`
+File ini digunakan untuk memberikan dokumentasi tentang proyek kepada pengembang lain atau pengguna aplikasi.
+
+---
 ## 6. DIAGRAM ARSITEKTUR
 
 Berikut diagram arsitektur proyek dalam bentuk flowchart visual:
@@ -413,6 +724,8 @@ flowchart
 ```
 
 Diagram ini menunjukkan bagaimana modul saling terhubung dan bagaimana aliran data terjadi di dalam aplikasi **Lab-NestJS**.
+
+---
 
 ## 7. ALUR KERJA REGISTER USER, LOGIN DAN AUTHENTICATION
 ```mermaid
