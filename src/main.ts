@@ -1,34 +1,35 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule} from '@nestjs/swagger'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser'
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
-  
+
   app.enableCors({
-    origin : "*"
-  })
+    origin: '*',
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
-      transform : true
-  }))
+      transform: true,
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Lab BackEnd Kelas - C')
-    .setDescription('Muh. Tegar Al Fikri - 105841110722')
+    .setDescription('M.Dzulfikar Hidayat - 105841107822')
     .setVersion('0.1')
     .addTag('Kelas - C')
     .addBearerAuth()
-    .build()
+    .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config)
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api-docs', app, documentFactory)
+  SwaggerModule.setup('api-docs', app, documentFactory);
 
   await app.listen(process.env.PORT ?? 3000);
 }
