@@ -749,9 +749,25 @@ graph TD
   K -->|Valid| N[Akses API diberikan]
   K -.->|Gagal: Token tidak valid| O[Tampilkan error: Token tidak sah]
 ```
+---
+## 8. ALUR SKEMA ALUR CHAT ROOM DENGAN WEBSOCKET
+```mermaid
+graph TD
+    A[User Client] -->|Bergabung ke Room| B[Server WebSocket NestJS]
+    B -->|Broadcast User Bergabung| C[ Room Chat]
+    C -->|Memberi Notifikasi ke Semua User| A
 
+     A -->|Mengirim Pesan| B
+    B -->|Broadcast Pesan ke Room| C
+    C -->|Mengirim Pesan ke Semua User| A
 
-## 8. CARA MENJALANKAN PROYEK
+    A -->|Keluar dari Room| B
+    B -->|Broadcast User Keluar| C
+    C -->|Memberi Notifikasi ke Semua User| A
+```
+---
+
+## 9. CARA MENJALANKAN PROYEK
 
 1. **Clone repository:**
    ```sh
@@ -777,5 +793,5 @@ graph TD
    ```
 
 
-## 9. KESIMPULAN
+## 10. KESIMPULAN
 Proyek ini adalah implementasi backend menggunakan NestJS dengan beberapa modul utama, termasuk autentikasi, chat, profil mahasiswa, dan database dengan Prisma. Dengan menggunakan teknologi seperti WebSockets dan JWT, proyek ini dapat menyediakan komunikasi real-time dan autentikasi pengguna yang aman.
